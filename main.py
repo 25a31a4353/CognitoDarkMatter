@@ -7,7 +7,7 @@ env = MyEnvironment()
 
 @app.get("/")
 def root():
-    return {"status": "running"}
+    return {"message": "Hello"}   # 🔥 CHANGE THIS LINE
 
 @app.get("/health")
 def health():
