@@ -20,3 +20,7 @@ def reset():
 @app.post("/step")
 def step(action: dict):
     return env.step(action)
+
+@app.get("/ping")
+def ping():
+    return "ok"
