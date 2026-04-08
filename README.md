@@ -1,3 +1,13 @@
+---
+title: MetaXScaler
+emoji: 🚀
+colorFrom: blue
+colorTo: purple
+sdk: docker
+app_file: main.py
+pinned: false
+---
+
 MetaXScaler — Hidden Assumption Discovery Environment
 Overview
 MetaXScaler is an intelligent environment designed to analyze arguments and uncover hidden assumptions in reasoning. It simulates how an AI agent evaluates claims, identifies implicit assumptions, and progresses step-by-step through logical analysis.
