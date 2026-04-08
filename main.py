@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 
 app = FastAPI(
     title="CognitoDarkMatter API",
     version="1.0.0"
 )
 
-# ✅ CORS (important for HF + browser access)
+# ✅ CORS (keep this)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,26 +16,48 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ✅ Root endpoint (must exist)
+# -------------------------------
+# Request Model
+# -------------------------------
+class StepInput(BaseModel):
+    action: str
+
+
+# -------------------------------
+# Root Endpoint
+# -------------------------------
 @app.get("/")
 def root():
-    return {"status": "ok"}
+    return {"message": "CognitoDarkMatter is running"}
 
-# ✅ Health check (VERY IMPORTANT for Hugging Face)
+
+# -------------------------------
+# Health Check
+# -------------------------------
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-# ✅ Example API (optional but good for demo)
-@app.get("/hello")
-def say_hello():
-    return {"message": "Hello from CognitoDarkMatter 🚀"}
 
-import logging
+# -------------------------------
+# Reset Endpoint (CRITICAL 🔥)
+# -------------------------------
+@app.post("/reset")
+def reset():
+    return {
+        "observation": "environment reset",
+        "reward": 0,
+        "done": False
+    }
 
-logging.basicConfig(level=logging.INFO)
 
-@app.get("/")
-def root():
-    logging.info("Root endpoint called")
-    return {"status": "ok"}
+# -------------------------------
+# Step Endpoint (CRITICAL 🔥)
+# -------------------------------
+@app.post("/step")
+def step(input_data: StepInput):
+    return {
+        "observation": f"action received: {input_data.action}",
+        "reward": 1,
+        "done": False
+    }
