@@ -7,7 +7,7 @@ env = MyEnvironment()
 
 @app.get("/")
 def root():
-    return {"message": "Hello"}   # 🔥 CHANGE THIS LINE
+    return {"status": "ok"}   # 🔥 IMPORTANT CHANGE
 
 @app.get("/health")
 def health():
@@ -20,7 +20,3 @@ def reset():
 @app.post("/step")
 def step(action: dict):
     return env.step(action)
-
-@app.get("/ping")
-def ping():
-    return "ok"
