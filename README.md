@@ -61,7 +61,7 @@ GET /
 Response:
 
 JSON
-{"message": "Hello"}
+{"status": "ok"}
 Health Check
 GET /health
 
