@@ -1,0 +1,16 @@
+name: cognitodarkmatter
+
+environment:
+  type: python
+
+entrypoint:
+  command: uvicorn main:app --host 0.0.0.0 --port 7860
+
+endpoints:
+  reset: POST /reset
+  step: POST /step
+  state: GET /state
+
+metadata:
+  description: Hidden Assumption Discovery Environment
+  version: 1.0.0
