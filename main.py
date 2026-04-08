@@ -29,3 +29,12 @@ def health():
 @app.get("/hello")
 def say_hello():
     return {"message": "Hello from CognitoDarkMatter 🚀"}
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
+
+@app.get("/")
+def root():
+    logging.info("Root endpoint called")
+    return {"status": "ok"}
