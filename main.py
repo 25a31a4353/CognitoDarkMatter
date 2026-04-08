@@ -1,22 +1,31 @@
 from fastapi import FastAPI
-from my_env_environment import MyEnvironment
+from fastapi.middleware.cors import CORSMiddleware
 
-app = FastAPI()
+app = FastAPI(
+    title="CognitoDarkMatter API",
+    version="1.0.0"
+)
 
-env = MyEnvironment()
+# ✅ CORS (important for HF + browser access)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
+# ✅ Root endpoint (must exist)
 @app.get("/")
 def root():
-    return {"status": "ok"}   # 🔥 IMPORTANT CHANGE
+    return {"status": "ok"}
 
+# ✅ Health check (VERY IMPORTANT for Hugging Face)
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-@app.post("/reset")
-def reset():
-    return env.reset()
-
-@app.post("/step")
-def step(action: dict):
-    return env.step(action)
+# ✅ Example API (optional but good for demo)
+@app.get("/hello")
+def say_hello():
+    return {"message": "Hello from CognitoDarkMatter 🚀"}
