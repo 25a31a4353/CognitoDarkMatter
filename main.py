@@ -1,13 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel
 
 app = FastAPI(
     title="CognitoDarkMatter API",
     version="1.0.0"
 )
 
-# ✅ CORS (keep this)
+# ✅ CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -16,32 +15,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# -------------------------------
-# Request Model
-# -------------------------------
-class StepInput(BaseModel):
-    action: str
-
-
-# -------------------------------
-# Root Endpoint
-# -------------------------------
+# ✅ Root
 @app.get("/")
 def root():
-    return {"message": "CognitoDarkMatter is running"}
+    return {"status": "ok"}
 
-
-# -------------------------------
-# Health Check
-# -------------------------------
+# ✅ Health
 @app.get("/health")
 def health():
     return {"status": "ok"}
 
-
-# -------------------------------
-# Reset Endpoint (CRITICAL 🔥)
-# -------------------------------
+# ✅ REQUIRED: RESET ENDPOINT
 @app.post("/reset")
 def reset():
     return {
@@ -50,14 +34,11 @@ def reset():
         "done": False
     }
 
-
-# -------------------------------
-# Step Endpoint (CRITICAL 🔥)
-# -------------------------------
+# ✅ REQUIRED: STEP ENDPOINT
 @app.post("/step")
-def step(input_data: StepInput):
+def step(action: dict):
     return {
-        "observation": f"action received: {input_data.action}",
+        "observation": f"action received: {action}",
         "reward": 1,
         "done": False
     }
