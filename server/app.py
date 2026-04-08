@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import uvicorn
 
 app = FastAPI()
 
@@ -29,3 +30,8 @@ def state():
 @app.get("/")
 def root():
     return {"status": "running"}
+
+# ✅ THIS IS THE IMPORTANT PART
+def main():
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+    
