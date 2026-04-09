@@ -1,7 +1,15 @@
 import urllib.request
 import json
+import os
+from openai import OpenAI
 
 BASE_URL = "http://localhost:7860"
+
+# ✅ LLM CLIENT (REQUIRED)
+client = OpenAI(
+    base_url=os.environ["API_BASE_URL"],
+    api_key=os.environ["API_KEY"]
+)
 
 
 def post_request(endpoint, data=None):
@@ -20,14 +28,18 @@ def post_request(endpoint, data=None):
         return None
 
 
-def get_request(endpoint):
+def call_llm(prompt):
     try:
-        url = BASE_URL + endpoint
-        with urllib.request.urlopen(url) as response:
-            return json.loads(response.read().decode())
+        response = client.chat.completions.create(
+            model=os.environ.get("MODEL_NAME", "gpt-4o-mini"),
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        return response.choices[0].message.content
     except Exception as e:
-        print("[ERROR] GET:", e, flush=True)
-        return None
+        print("[LLM ERROR]", e, flush=True)
+        return "default_action"
 
 
 def run_task(task_name):
@@ -38,7 +50,12 @@ def run_task(task_name):
     steps = 0
 
     for i in range(3):
-        action = {"action": "move"}
+        # ✅ USE LLM TO DECIDE ACTION
+        prompt = f"You are solving {task_name}. Give next action."
+        action_text = call_llm(prompt)
+
+        action = {"action": action_text}
+
         res = post_request("/step", action)
 
         if res is None:
@@ -58,7 +75,6 @@ def run_task(task_name):
 
 if __name__ == "__main__":
     try:
-        # ✅ Run 3 tasks (IMPORTANT requirement)
         run_task("easy")
         run_task("medium")
         run_task("hard")
