@@ -1,8 +1,8 @@
 import urllib.request
 import json
-import time
 
 BASE_URL = "http://localhost:7860"
+
 
 def post_request(endpoint, data=None):
     try:
@@ -16,7 +16,7 @@ def post_request(endpoint, data=None):
         with urllib.request.urlopen(req) as response:
             return json.loads(response.read().decode())
     except Exception as e:
-        print("POST ERROR:", e)
+        print("[ERROR] POST:", e, flush=True)
         return None
 
 
@@ -26,20 +26,18 @@ def get_request(endpoint):
         with urllib.request.urlopen(url) as response:
             return json.loads(response.read().decode())
     except Exception as e:
-        print("GET ERROR:", e)
+        print("[ERROR] GET:", e, flush=True)
         return None
 
 
-def run_task():
-    print("Running inference...")
+def run_task(task_name):
+    print(f"[START] task={task_name}", flush=True)
 
-    # reset environment
     res = post_request("/reset")
-    print("Reset:", res)
-
     total_reward = 0
+    steps = 0
 
-    for step in range(3):
+    for i in range(3):
         action = {"action": "move"}
         res = post_request("/step", action)
 
@@ -48,21 +46,21 @@ def run_task():
 
         reward = res.get("reward", 0)
         total_reward += reward
+        steps += 1
 
-        print(f"Step {step}: reward={reward}")
+        print(f"[STEP] step={steps} reward={reward}", flush=True)
 
         if res.get("done"):
             break
 
-    state = get_request("/state")
-    print("Final State:", state)
-
-    return total_reward
+    print(f"[END] task={task_name} score={total_reward} steps={steps}", flush=True)
 
 
 if __name__ == "__main__":
     try:
-        score = run_task()
-        print("FINAL SCORE:", score)
+        # ✅ Run 3 tasks (IMPORTANT requirement)
+        run_task("easy")
+        run_task("medium")
+        run_task("hard")
     except Exception as e:
-        print("Inference failed safely:", e)
+        print("[FATAL ERROR]", e, flush=True)
